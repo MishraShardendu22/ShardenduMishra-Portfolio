@@ -1,0 +1,63 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+
+# Output of the go build command
+/build/
+/bin/
+/dist/
+*.out
+
+# Dependency directories (if using vendoring)
+/vendor/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Env files (security sensitive)
+.env
+.env.local
+.env.*.local
+
+# Node modules (if full-stack)
+node_modules/
+
+# Cache
+.cache/
+*.pyc
+
+# Coverage reports
+coverage.*
+*.coverprofile
+*.cov
+
+# Fiber static files (if you compile assets)
+public/assets/
+tmp/
+
+# GitHub Codespaces
+/.devcontainer/
+
+# Docker artifacts
+*.pid
+*.pid.lock
+
+# Go modules
+go.sum
