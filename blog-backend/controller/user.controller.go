@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/MishraShardendu22/database"
@@ -44,18 +45,18 @@ func RegisterUser(c *fiber.Ctx) error {
 	return util.ResponseAPI(c, fiber.StatusOK, "User registered successfully", nil)
 }
 
-func LoginUser() {
-
+func LoginUser(c *fiber.Ctx) {
+	fmt.Println("LoginUser")
 }
 
-func GetUserById() {
-
+func GetUserById(c *fiber.Ctx) {
+	fmt.Println("GetUserById")
 }
 
-func UpdateUser() {
-
+func UpdateUser(c *fiber.Ctx) {
+	fmt.Println("UpdateUser")
 }
 
-func VerifyUser() {
-
+func VerifyUser(c *fiber.Ctx) {
+	fmt.Println("VerifyUser")
 }

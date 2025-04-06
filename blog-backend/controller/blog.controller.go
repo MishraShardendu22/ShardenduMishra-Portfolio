@@ -1,25 +1,32 @@
 package controller
 
-func CreateBlog() {
+import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+func CreateBlog(c *fiber.Ctx) {
+	fmt.Println("CreateBlog")
+}
+
+func GetAllBlogs(c *fiber.Ctx) {
+	fmt.Println("GetAllBlogs")
 
 }
 
-func GetAllBlogs() {
-
+func GetBlogsByUser(c *fiber.Ctx) {
+	fmt.Println("GetBlogsByUser")
 }
 
-func GetBlogsByUser() {
-
+func GetBlogById(c *fiber.Ctx) {
+	fmt.Println("GetBlogById")
 }
 
-func GetBlogById() {
-
+func DeleteBlog(c *fiber.Ctx) {
+	fmt.Println("DeleteBlog")
 }
 
-func DeleteBlog() {
-
-}
-
-func UpdateBlog() {
-
+func UpdateBlog(c *fiber.Ctx) {
+	fmt.Println("UpdateBlog")
 }
