@@ -3,11 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/MishraShardendu22/database"
+	"github.com/MishraShardendu22/routes"
 	"github.com/MishraShardendu22/util"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/joho/godotenv"
 )
 
@@ -19,17 +22,25 @@ func main() {
 	err := godotenv.Load(".env")
 	if err == nil {
 		LoadEnvironmentVariables()
-	} 
-	
-	SetUpCORS(app)
+	}
 	ConnectDatabase(app)
+
+	SetUpCORS(app)
 	TestRoutes(app)
 	SetUpRoutes(app)
+	RateLimiter(app)
 	ListeningPort(app)
 }
 
 func SetUpRoutes(app *fiber.App) {
-	// Define your application routes here.
+	routes.UserRoutes(app)
+}
+
+func RateLimiter(app *fiber.App) {
+	app.Use(limiter.New(limiter.Config{
+		Expiration: 10 * time.Second,
+		Max:        3,
+	}))
 }
 
 func ListeningPort(app *fiber.App) {
@@ -58,7 +69,6 @@ func ConnectDatabase(app *fiber.App) {
 }
 
 func SetUpCORS(app *fiber.App) {
-	fmt.Println("URL: ", os.Getenv("CLIENT_URL"))
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     os.Getenv("CLIENT_URL"),
 		AllowMethods:     "GET,POST,PUT,DELETE,PATCH,OPTIONS",

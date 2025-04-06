@@ -14,5 +14,6 @@ func ResponseAPI(c *fiber.Ctx, status int, message string, data any, token ...st
 		response["token"] = token[0]
 	}
 
-	return c.Status(status).JSON(response)
+	c.Status(status).JSON(response)
+	return nil
 }
