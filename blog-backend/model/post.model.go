@@ -13,13 +13,14 @@ type Post struct {
 }
 
 type User struct {
-	Name    string   `json:"name"`
-	Email   string   `json:"email"`
-	Image   string   `json:"image"`
-	About   string   `json:"about"`
-	Posts   []Post   `json:"posts"`
-	Socials []string `json:"socials"`
-	CreatedAt time.Time `json:"created_at"`
+	Name      string    `bson:"name,validate" json:"name"`
+	Email     string    `bson:"email" json:"email"`
+	Image     string    `bson:"image" json:"image"`
+	Password  string    `bson:"password" json:"password"`
+	About     string    `bson:"about" json:"about"`
+	Posts     []Post    `bson:"posts" json:"posts"`
+	Socials   []string  `bson:"socials" json:"socials"`
+	CreatedAt time.Time `bson:"created_at" json:"created_at"`
 }
 
 type Tags struct {
