@@ -19,14 +19,12 @@ import (
 var Collection *mongo.Collection
 
 func RegisterUser(c *fiber.Ctx) error {
-	fmt.Println("1-CP")
 	var newUser model.User
 
 	if err := c.BodyParser(&newUser); err != nil {
 		return util.ResponseAPI(c, fiber.StatusBadRequest, "Error parsing request body", nil)
 	}
 
-	fmt.Println("2-CP")
 	if newUser.Name == "" || newUser.Email == "" || newUser.Image == "" {
 		return util.ResponseAPI(c, fiber.StatusBadRequest, "Missing required fields: Name, Email, Image", nil)
 	}
@@ -38,19 +36,16 @@ func RegisterUser(c *fiber.Ctx) error {
 		return util.ResponseAPI(c, fiber.StatusBadRequest, "Password must be at least 6 characters long", nil)
 	}
 
-	fmt.Println("3-CP")
 	var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 	if !emailRegex.MatchString(newUser.Email) {
 		return util.ResponseAPI(c, fiber.StatusBadRequest, "Invalid email format", nil)
 	}
 
-	fmt.Println("4-CP")
 	coll := database.Client.Database("blog").Collection("users")
 
 	filter := bson.M{"email": newUser.Email}
 	existingUserResult := coll.FindOne(c.Context(), filter)
 
-	fmt.Println("5-CP")
 	if existingUserResult.Err() == nil {
 		return util.ResponseAPI(c, fiber.StatusConflict, "User with this email already exists", nil)
 	} else if existingUserResult.Err() != mongo.ErrNoDocuments {
@@ -58,7 +53,6 @@ func RegisterUser(c *fiber.Ctx) error {
 		return util.ResponseAPI(c, fiber.StatusInternalServerError, "Database error during user check", nil)
 	}
 
-	fmt.Println("6-CP")
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 10)
 	if err != nil {
 		fmt.Println("Error hashing password:", err)
@@ -67,19 +61,16 @@ func RegisterUser(c *fiber.Ctx) error {
 	newUser.Password = string(hashedPassword)
 	newUser.CreatedAt = time.Now().UTC()
 
-	fmt.Println("7-CP")
 	_, err = coll.InsertOne(c.Context(), newUser)
 	if err != nil {
 		fmt.Println("Error inserting user:", err)
 		return util.ResponseAPI(c, fiber.StatusInternalServerError, "Error registering user", nil)
 	}
 
-	fmt.Println("8-CP")
 	return util.ResponseAPI(c, fiber.StatusCreated, "User registered successfully", nil)
 }
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNoYXJkZW5kdTJAM3FlZTIzNDIzeGFtcGxlLmNvbSIsImV4cCI6MTc0NDM1MzM1NCwibmFtZSI6IlNoYXJkZW5kdSBNaXNocmEifQ.uoR56_FkItqFqxU2L2X3CZR1vtu2rdxP0hgOLDPmniM"
 
-func GenerateJWT(email, name, image, about string) (string, error) {
+func GenerateJWT(email string, name string) (string, error) {
 	var jwtSecret = os.Getenv("JWT_SECRET")
 	fmt.Println("JWT_SECRET:", jwtSecret)
 	if jwtSecret == "" {
@@ -129,24 +120,12 @@ func LoginUser(c *fiber.Ctx) error {
 		return util.ResponseAPI(c, fiber.StatusUnauthorized, "Invalid credentials", nil)
 	}
 
-	token, err := GenerateJWT(existingUser.Email, existingUser.Name, existingUser.Image, existingUser.About)
+	token, err := GenerateJWT(existingUser.Email, existingUser.Name)
 	if err != nil {
 		fmt.Println("Error generating JWT:", err)
 		return util.ResponseAPI(c, fiber.StatusInternalServerError, "Error logging in", nil)
 	}
 
 	existingUser.Password = ""
-	return util.ResponseAPI(c, fiber.StatusOK, "User logged in successfully", existingUser, token)
-}
-
-func GetUserById(c *fiber.Ctx) {
-	fmt.Println("GetUserById")
-}
-
-func UpdateUser(c *fiber.Ctx) {
-	fmt.Println("UpdateUser")
-}
-
-func VerifyUser(c *fiber.Ctx) {
-	fmt.Println("VerifyUser")
+	return util.ResponseAPI(c, fiber.StatusOK, "User logged in successfully", "", token)
 }
